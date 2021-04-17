@@ -1,0 +1,28 @@
+{% extends 'base.html' %} {%block title%}Signup{%endblock%}
+{% block template %}
+
+<section id="mu-hero">
+    <div class="container">
+        <div class="row">
+
+            <div class="col-md-6 col-sm-6 col-sm-push-6">
+                <div class="mu-hero-right">
+                    <img src="{{url_for('static', filename='images/ebook.png')}}" alt="Ebook img">
+                </div>
+            </div>
+
+            <div class="col-md-6 col-sm-6 col-sm-pull-6">
+                <div class="mu-hero-left">
+                    <h1>Deciding what to read next?</h1>
+                    <p>You’re in the right place. Tell us what titles or genres you’ve enjoyed in the past, and
+                        we’ll give you surprisingly insightful recommendations.</p>
+                    <a href="{{url_for('signup')}}" class="mu-primary-btn">Get Started</a>
+                    <span>Mobile Platform Coming Soon.</span>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+{%endblock%}

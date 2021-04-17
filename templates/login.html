@@ -1,0 +1,48 @@
+{% extends 'base.html' %} {%block title%}Signup{%endblock%}
+{% block template %}
+
+<!-- Start Sign up -->
+<section id="mu-contact" style="background-color: #ff871c;">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="mu-contact-area">
+
+                    <div class="mu-heading-area">
+                        <h2 class="mu-heading-title">Login</h2>
+                        <span class="mu-header-dot"></span>
+                        <p>Chances are your friends are discussing their favorite (and least favorite) books on
+                            Golden reads.</p>
+                    </div>
+
+                    <!-- Start Sign up Content -->
+                    <div class="mu-contact-content">
+
+                        <div id="form-messages"></div>
+                        <form id="ajax-contact" method="POST" action="{{ url_for('login', next=next) }}"
+                            class="mu-contact-form">
+                            <div class="form-group">
+                                <input type="text" class="form-control" placeholder="Username" id="username"
+                                    name="username" pattern="[a-zA-Z0-9]+" required style="background-color: #fff;" />
+                            </div>
+                            <div class="form-group">
+                                <input type="password" class="form-control" placeholder="Enter Password" id="password"
+                                    name="password" required style="background-color: #fff;" />
+                            </div>
+
+
+                            <button type="submit" class="mu-send-msg-btn"
+                                style="background-color: #fff; "><span>Login</span></button>
+                        </form>
+
+                    </div>
+                    <!-- End Sign up Content -->
+
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- End Sign up -->
+
+{%endblock%}
