@@ -30,15 +30,35 @@ def get_google_books_data(isbn):
     value = response.json()
     #print(value)
 
-@app.route("/login", methods=['GET', 'POST'])
+
+@app.route("/login",methods=['GET','POST'])
 def login():
+    isbn = request.args.get('next')
+    if request.method == 'POST':
+        username = request.form.get('username')
+        password = request.form.get('password')
+        user = db.execute("select * from users where username=:username and password=:password;",{'username':username,'password':password_hash(password)})
+        if user.rowcount == 0:
+            return render_template('login.html',message="Wrong Username or Password.")
+        session['logged_in'] = True
+        session['username'] = request.form['username']
+        if isbn:
+            return redirect(url_for("book",isbn=isbn))
+        return redirect(url_for("search"))
+
+    return render_template('login.html',next=isbn)
+
+
+
+@app.route("/signup", methods=['GET', 'POST'])
+def signup():
     isbn = request.args.get('next')
     if request.method == 'POST':
         username = request.form.get('username')
         password1 = request.form.get('password1')
         password2 = request.form.get('password2')
         if password1!=password2:
-            return render_template('signup.html',message="Password did not match.")
+            return render_template('signup.html',message="Password does not match.")
            
         try:
             password = password_hash(password1)
@@ -50,7 +70,7 @@ def login():
                 return redirect(url_for("book",isbn=isbn))
             return redirect(url_for("search"))
         except:
-            return render_template('signup.html',message="Username Exists. Try Another.")
+            return render_template('signup.html',message="Username Already Exists.")
     return render_template('signup.html',next=isbn)
 
 
