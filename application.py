@@ -1,12 +1,16 @@
 import os
 import requests
+import hashlib
 from flask import Flask, session, render_template, request, redirect, url_for, jsonify
 from flask_session import Session
+from flask_login import current_user, login_user, login_required,logout_user
+from forms import RegistrationForm, LoginForm
+
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 
 app = Flask(__name__)
-
+app.config['SECRET_KEY'] = '387b28b25302f3d780ed53706cdeed2e'
 # Check for environment variable
 if not os.getenv("DATABASE_URL"):
     raise RuntimeError("DATABASE_URL is not set")
@@ -22,8 +26,17 @@ db = scoped_session(sessionmaker(bind=engine))
 
 
 @app.route("/")
+@app.route("/home")
 def index():
-    return render_template('base.html')
+    return render_template('home.html')
+
+
+def password_hash(password):
+    salt = "27a0091dee99016f8fb6599da096feff"
+    salt_password = password + salt
+    hashed_password = hashlib.md5(salt_password.encode())
+    return hashed_password.hexdigest()
+
 
 def get_google_books_data(isbn):
     response = requests.get(f"https://www.googleapis.com/books/v1/volumes?q={isbn}&key=AIzaSyDTPZR0X5RS-Vb7k00pG9QfmykL-yTE514")
@@ -31,47 +44,24 @@ def get_google_books_data(isbn):
     #print(value)
 
 
-@app.route("/login",methods=['GET','POST'])
-def login():
-    isbn = request.args.get('next')
-    if request.method == 'POST':
-        username = request.form.get('username')
-        password = request.form.get('password')
-        user = db.execute("select * from users where username=:username and password=:password;",{'username':username,'password':password_hash(password)})
-        if user.rowcount == 0:
-            return render_template('login.html',message="Wrong Username or Password.")
-        session['logged_in'] = True
-        session['username'] = request.form['username']
-        if isbn:
-            return redirect(url_for("book",isbn=isbn))
-        return redirect(url_for("search"))
-
-    return render_template('login.html',next=isbn)
-
-
 
 @app.route("/signup", methods=['GET', 'POST'])
 def signup():
-    isbn = request.args.get('next')
-    if request.method == 'POST':
-        username = request.form.get('username')
-        password1 = request.form.get('password1')
-        password2 = request.form.get('password2')
-        if password1!=password2:
-            return render_template('signup.html',message="Password does not match.")
-           
-        try:
-            password = password_hash(password1)
-            user = db.execute("insert into users (username,password) values(:username ,:password);",{'username':username,'password':password})
-            db.commit()
-            session['logged_in'] = True
-            session['username'] = username
-            if isbn:
-                return redirect(url_for("book",isbn=isbn))
-            return redirect(url_for("search"))
-        except:
-            return render_template('signup.html',message="Username Already Exists.")
-    return render_template('signup.html',next=isbn)
+    
+    form = RegistrationForm()
+    return render_template('signup.html', title='Sign Up', form=form)
+
+
+
+@app.route("/login",methods=['GET','POST'])
+def login():
+
+    form = LoginForm()
+    return render_template('login.html', title="Login", form=form)
+
+
+
+
 
 
 get_google_books_data(9781632168146)
