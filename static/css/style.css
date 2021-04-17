@@ -1,34 +1,4 @@
 
-/*
-Template Name: Kindle	
-Author: MarkUps
-Author URI: http://www.markups.io/
-Version: 1.0
-*/
-
-
-/* Table of Content
-==================================================
-#BASIC TYPOGRAPHY
-#HEADER	
-#MENU 
-#HERO SECTION
-#COUNTER
-#BOOK OVERVIEW
-#VIDEO REVIEW
-#AUTHOR
-#PRICING
-#READERS TESTIMONIALS
-#CONTACT US
-#FOOTER
-#RESPONSIVE STYLE
-*/
-
-
-/*--------------------*/
-/* BASIC TYPOGRAPHY */
-/*--------------------*/
-
 body,
 html {
 	overflow-x:hidden;
@@ -225,7 +195,7 @@ button:focus {
 
 .mu-send-msg-btn {
 	border-radius: 20px;
-	font-size: 13px;
+	font-size: 14px;
 	font-weight: 700;
 	letter-spacing: 1.5px;
 	text-align: center;
@@ -239,7 +209,7 @@ button:focus {
 
 .mu-send-msg-btn:hover,
 .mu-send-msg-btn:focus {
-	background-color: #fff;
+	background-color: #ff871c;
 }
 
 
@@ -259,6 +229,7 @@ button:focus {
 	padding: 25px 0;
 	z-index: 999;
 	transition: all 0.5s;
+	background-color: #ff871c;
 }
 
 .navbar-default .navbar-brand {
@@ -754,132 +725,31 @@ button:focus {
 
 
 /*--------------------*/
-/* READERS TESTIMONIALS */
-/*--------------------*/
-
-#mu-testimonials {
-	background-image: url("assets/images/testimonials-bg.jpeg");
-	background-position: center center;
-	background-size: cover;
-	background-attachment: fixed;
-	display: inline;
-	float: left;
-	position: relative;
-	width: 100%;
-}
-
-#mu-testimonials::before {
-	background: rgba(0,0,0,0.9);
-	bottom: 0;
-	content: '';
-	left: 0;
-	top: 0;
-	right: 0;
-	position: absolute;
-	opacity: 0.84;
-}
-
-.mu-testimonials-area {
-	display: inline;
-	float: left;
-	padding: 150px 0 175px;
-	width: 100%;
-}
-
-.mu-testimonials-area h2 {
-	color: #fff;
-	text-align: center;
-}
-
-.mu-testimonials-block {
-	display: inline;
-	float: left;
-	margin-top: 60px;
-	width: 100%;
-}
-
-.mu-testimonial-slide li{
-	list-style: none;
-	text-align: center;
-}
-
-.mu-testimonial-slide li p {
-	color: #fff;
-	padding: 0 10%;
-}
-
-.mu-testimonial-slide .mu-rt-img {
-	border-radius: 50%;
-	width: 100px;
-	height: 100px;
-	margin-top: 25px;
-	display: inline-block;
-}
-
-.mu-rt-name {
-	margin-bottom: 5px;
-	color: #fff;
-	line-height: 1;
-	margin-top: 25px;
-	letter-spacing: 1px;
-}
-
-.mu-rt-title {
-	color: #fff;
-	font-size: 14px;
-}
-
-.mu-testimonial-slide .slick-dots {
-    bottom: -50px;
-}
-
-.mu-testimonial-slide .slick-dots li button {
-	height: 15px;
-	padding: 0;
-	width: 15px;
-	border-radius: 50%;
-	border: 1px solid #f8f8f8;
-	-webkit-transition: all 0.5s;
-	-o-transition: all 0.5s;
-	transition: all 0.5s;
-}
-
-.mu-testimonial-slide .slick-dots li button:hover,
-.mu-testimonial-slide .slick-dots li button:focus,
-.mu-testimonial-slide .slick-dots li.slick-active button {
-	opacity: 1;
-}
-
-.mu-testimonial-slide .slick-dots li button:before {
-	display: none;
-}
-
-/*--------------------*/
 /* CONTACT US */
 /*--------------------*/
 
-#mu-contact {
-	background-color: #fff;
+#sign-up {
+	
 	display: inline;
 	float: left;
 	width: 100%;
 }
 
-.mu-contact-area {
+.sign-up-area {
 	display: inline;
 	float: left;
 	padding: 100px 0;
 	width: 100%;
 }
 
-.mu-contact-header {
+.sign-up-header {
 	display: inline;
 	float: left;
 	text-align: center;
 	width: 100%;
 }
 
-.mu-contact-content {
+.sign-up-content {
 	display: inline;
 	float: left;
 	margin-top: 50px;
@@ -887,12 +757,12 @@ button:focus {
 	padding: 0 20%;
 }
 
-.mu-contact-form {
+.sign-up-form {
 	text-align: center;
 }
 
-.mu-contact-form .form-group input {
-	background: transparent;
+.sign-up-form .form-group input {
+	background: #fff;
 	color: #333;
 	font-size: 15px;
 	border: 1px solid #ccc;
@@ -902,7 +772,7 @@ button:focus {
 	margin-bottom: 24px;
 }
 
-.mu-contact-form .form-group textarea{
+.sign-up-form .form-group textarea{
 	color: #333;
 	background: transparent;
 	border: 1px solid #ccc;
@@ -912,34 +782,34 @@ button:focus {
 	height: 190px;
 }
 
-.mu-contact-form .form-control:focus {
+.sign-up-form .form-control:focus {
 	background-color: #fff;
     outline: 0;
     box-shadow: none;    
 } 
 
-.mu-contact-form .form-control::-webkit-input-placeholder {
+.sign-up-form .form-control::-webkit-input-placeholder {
 	color: #888;
 	font-size: 15px;
 }
 
-.mu-contact-form .form-control:-moz-placeholder { /* Firefox 18- */
+.sign-up-form .form-control:-moz-placeholder { /* Firefox 18- */
 	color: #888;
 	font-size: 15px; 
 }
 
-.mu-contact-form .form-control::-moz-placeholder {  /* Firefox 19+ */
+.sign-up-form .form-control::-moz-placeholder {  /* Firefox 19+ */
 	color: #888;
 	font-size: 15px;
 }
 
-.mu-contact-form .form-control:-ms-input-placeholder {  
+.sign-up-form .form-control:-ms-input-placeholder {  
 	color: #888;
 	font-size: 15px;
 }
 
-.mu-contact-form .button-default::after,
-.mu-contact-form .button-default > span {
+.sign-up-form .button-default::after,
+.sign-up-form .button-default > span {
 	padding: 12px 40px;  
 }
 
@@ -1107,7 +977,7 @@ button:focus {
 		width: 100%;
 	}
 
-	.mu-contact-right {
+	.sign-up-right {
 		margin-top: 50px;
 	}
 	
@@ -1165,7 +1035,7 @@ button:focus {
 		margin-top: 30px;
 	}
 
-	.mu-contact-content {
+	.sign-up-content {
 		padding: 0 10%;
 	}
 	
@@ -1238,7 +1108,7 @@ button:focus {
 		height: 250px;
 	}
 
-	.mu-contact-content {
+	.sign-up-content {
 		padding: 0 5%;
 	}
 
@@ -1253,7 +1123,7 @@ button:focus {
 		line-height: 35px;
 	}
 
-	.mu-contact-form button {
+	.sign-up-form button {
 		width: 100%;
 	}
 	
