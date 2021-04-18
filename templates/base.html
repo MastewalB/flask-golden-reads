@@ -63,8 +63,17 @@
                     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                         <ul class="nav navbar-nav mu-menu navbar-right">
                             <li><a href="{{url_for('index')}}">Home</a></li>
+                            {% if session['logged_in']%}
+                            <li>
+                                <a href="#">{{session['username']}}</a>
+                            </li>
+                            {% endif %}
+                            {% if not session['logged_in']%}
                             <li><a href="{{url_for('login')}}">Login</a></li>
                             <li><a href="{{url_for('signup')}}">Sign Up</a></li>
+                            {%else%}
+                            <li><a href="{{url_for('logout')}}">Logout</a></li>
+                            {% endif %}
                             <li><a href="">Contact Us</a></li>
                         </ul>
                     </div><!-- /.navbar-collapse -->
@@ -74,7 +83,7 @@
     </header>
     <!-- End Header -->
 
-    <div class="col-md-8">
+    <div class="col-md-12">
         {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
         {% for category, message in messages %}
