@@ -5,7 +5,7 @@ from flask import Flask, session, render_template, request, redirect, url_for, j
 from flask_session import Session
 from flask_login import current_user, login_user, login_required,logout_user
 from forms import RegistrationForm, LoginForm, SearchForm
-
+from flask_bcrypt import Bcrypt 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 
@@ -23,7 +23,7 @@ Session(app)
 # Set up database
 engine = create_engine(os.getenv("DATABASE_URL"))
 db = scoped_session(sessionmaker(bind=engine))
-
+bcrypt = Bcrypt(app)
 
 @app.route("/")
 @app.route("/home")
@@ -54,10 +54,20 @@ def get_google_books_data(isbn):
 @app.route("/signup", methods=['GET', 'POST'])
 def signup():
     
+    isbn = request.args.get('next')
     form = RegistrationForm()
     if form.validate_on_submit():
-        flash(f'Account successfully created for {form.username.data}!!', 'success')
-        return redirect(url_for('search'))
+        username = form.username.data
+        try:
+            hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
+            user = db.execute("INSERT INTO Users (username, password) VALUES (:username, :password);", {'username':username, 'password' :hashed_password})
+            db.commit()
+            session['logged_in'] = True
+            session['username'] = username
+            if isbn:
+                return redirect(url_for('book'))
+            flash(f'Account successfully created for {form.username.data}!!', 'success')
+            return redirect(url_for('search'))
     return render_template('signup.html', title='Sign Up', form=form)
 
 
@@ -69,6 +79,9 @@ def login():
     return render_template('login.html', title="Login", form=form)
 
 
+@app.route("/book", methods=['GET', 'POST'])
+def book():
+    return render_template('book.html')
 
 
 
