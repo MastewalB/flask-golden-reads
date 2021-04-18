@@ -1,0 +1,40 @@
+{% extends 'base.html' %} {%block title%}Signup{%endblock%}
+{% block template %}
+
+
+
+<section id="sign-up">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="sign-up-area">
+                    <div class="sign-up-content">
+                        <div id="form-messages">
+                            <form id="ajax-contact" method="POST" action="{{ url_for('signup', next=next) }}"
+                                class="sign-up-form">
+                                {{ form.hidden_tag() }}
+
+                                <div class="form-group">
+                                    {{ form.isbn.label}}
+
+                                    {% if form.isbn.errors %}
+                                    {{ form.isbn(class="form-control is-invalid")}}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.isbn.errors %}
+                                        <span>{{ error }}</span>
+                                        {% endfor %}
+                                    </div>
+                                    {% else %}
+                                    {{ form.isbn(class="form-control")}}
+                                    {% endif %}
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{%endblock%}
