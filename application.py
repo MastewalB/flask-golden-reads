@@ -3,7 +3,7 @@ import requests
 import hashlib
 from flask import Flask, session, render_template, request, redirect, url_for, jsonify, flash
 from flask_session import Session
-from flask_login import current_user, login_user, login_required,logout_user
+from flask_login import LoginManager, current_user, login_user, login_required,logout_user
 from forms import RegistrationForm, LoginForm, SearchForm
 from flask_bcrypt import Bcrypt 
 from sqlalchemy import create_engine
@@ -35,6 +35,11 @@ def index():
 def search():
     form = SearchForm()
     return render_template('search.html', title="Search", form=form)
+
+
+@app.before_request
+def make_session_permanent():
+    session.permanent = True 
 
 
 def password_hash(password):
@@ -79,9 +84,22 @@ def signup():
 
 @app.route("/login",methods=['GET','POST'])
 def login():
-
-    form = LoginForm() 
-    return render_template('login.html', title="Login", form=form)
+    isbn = request.args.get('next')
+    form = LoginForm()
+    if form.validate_on_submit():
+        email = request.form.get('email')
+        user = db.execute("SELECT * FROM Users WHERE email=:email;", {'email':email}).fetchone()
+        if user and bcrypt.check_password_hash(user.password, form.password.data):
+            session['logged_in'] = True
+            session['username'] = request.form.get('username')
+            if request.form.get('remember'):
+                make_session_permanent()
+            if isbn:
+                return redirect(url_for("book",isbn=isbn))
+            return redirect(url_for("search"))            
+        else:
+            return render_template('login.html',message="Wrong Email Address.") 
+    return render_template('login.html', title="Login", form=form, next=isbn)
 
 
 @app.route("/book", methods=['GET', 'POST'])
