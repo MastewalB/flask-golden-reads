@@ -34,18 +34,19 @@ def create_user_table():
           id SERIAL PRIMARY KEY,
           username VARCHAR ( 20 ) UNIQUE NOT NULL,
           email VARCHAR ( 255 ) NOT NULL,
+          image_file VARCHAR ( 20 ) NOT NULL DEFAULT 'default.jpg',
           password VARCHAR ( 50 ) NOT NULL,
           last_login TIMESTAMP
       );
     """
+
+
     try:
-        db.execute("DROP TABLE users")
-        print("Dropped users")
+        db.execute(create_user_table)
+        db.commit()
+        print("User Table Created")
     except:
-        print("No database users")
-    db.execute(create_user_table)
-    db.commit()
-    print("User Table Created")
+        print("User Table already exists!")
 
 
 def create_book_table():
@@ -60,9 +61,12 @@ def create_book_table():
           year VARCHAR NOT NULL
       );
     """
-    db.execute(create_book_table)
-    db.commit()
-    print("Book Table Created")
+    try:
+        db.execute(create_book_table)
+        db.commit()
+        print("Book Table Created")
+    except:
+        print("Book Table already exists!")
 
 def create_review_table():
     """Create review Table"""
@@ -76,9 +80,12 @@ def create_review_table():
           book_id INT NOT NULL
       );
     """
-    db.execute(create_book_table)
-    db.commit()
-    print("Review Table Created")
+    try:
+        db.execute(create_book_table)
+        db.commit()
+        print("Review Table Created")
+    except:
+        print("Review Table already exists!")
 
 
 if __name__ == '__main__':
