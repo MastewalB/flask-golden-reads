@@ -56,19 +56,24 @@ def signup():
     
     isbn = request.args.get('next')
     form = RegistrationForm()
-    if form.validate_on_submit():
+    if form.validate_on_submit() and request.method == 'POST':
+        
+        
         username = form.username.data
-        try:
-            hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
-            user = db.execute("INSERT INTO Users (username, password) VALUES (:username, :password);", {'username':username, 'password' :hashed_password})
-            db.commit()
-            session['logged_in'] = True
-            session['username'] = username
-            if isbn:
-                return redirect(url_for('book'))
-            flash(f'Account successfully created for {form.username.data}!!', 'success')
-            return redirect(url_for('search'))
-    return render_template('signup.html', title='Sign Up', form=form)
+        email = form.email.data
+        hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
+        user = db.execute("INSERT INTO Users (username, email, password) VALUES (:username, :email, :password);", {'username':username, 'email': email, 'password' :hashed_password})
+        db.commit()
+        session['logged_in'] = True
+        session['username'] = username
+        session['user_img'] = db.execute("SELECT image_file FROM Users WHERE username=:username", {'username':username})
+        #print("Imageeeeeeee   ********* " + session['user_img'])
+        if isbn:
+            return redirect(url_for('book'))
+        flash(f'Account successfully created for {form.username.data}!!', 'success')
+        return redirect(url_for('search'))
+        
+    return render_template('signup.html', title='Sign Up', form=form, next=isbn)
 
 
 
@@ -83,6 +88,12 @@ def login():
 def book():
     return render_template('book.html')
 
+
+@app.route("/logout")
+def logout():
+    
+    session.clear()
+    return redirect(url_for("login"))
 
 
 
