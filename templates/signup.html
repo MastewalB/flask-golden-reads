@@ -19,56 +19,92 @@
                     <!-- Start Sign up Content -->
                     <div class="sign-up-content">
 
-                        <div id="form-messages"></div>
-                        <form id="ajax-contact" method="POST" action="{{ url_for('signup', next=next) }}"
-                            class="sign-up-form">
+                        <div id="form-messages">
+                            <form id="ajax-contact" method="POST" action="{{ url_for('signup', next=next) }}"
+                                class="sign-up-form">
 
-                            {{ form.hidden_tag() }}
+                                {{ form.hidden_tag() }}
 
-                            <div class="form-group">
-                                {{ form.username.label}}
-                                {{ form.username(class="form-control")}}
+                                <div class="form-group">
+                                    {{ form.username.label}}
+
+                                    {% if form.username.errors %}
+                                    {{ form.username(class="form-control is-invalid")}}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.username.errors %}
+                                        <span>{{ error }}</span>
+                                        {% endfor %}
+                                    </div>
+                                    {% else %}
+                                    {{ form.username(class="form-control")}}
+                                    {% endif %}
+
+                                </div>
+                                <div class="form-group">
+                                    {{ form.email.label}}
+                                    {% if form.email.errors %}
+                                    {{ form.email(class="form-control is-invalid")}}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.email.errors %}
+                                        <span>{{ error }}</span>
+                                        {% endfor %}
+                                    </div>
+                                    {% else %}
+                                    {{ form.email(class="form-control")}}
+                                    {% endif %}
 
 
-                            </div>
-                            <div class="form-group">
-                                {{ form.email.label}}
-                                {{ form.email(class="form-control")}}
+                                </div>
+                                <div class="form-group">
+                                    {{ form.password.label}}
+                                    {% if form.password.errors %}
+                                    {{ form.password(class="form-control is-invalid")}}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.password.errors %}
+                                        <span>{{ error }}</span>
+                                        {% endfor %}
+                                    </div>
+                                    {% else %}
+                                    {{ form.password(class="form-control")}}
+                                    {% endif %}
 
 
-                            </div>
-                            <div class="form-group">
-                                {{ form.password.label}}
-                                {{ form.password(class="form-control")}}
+                                </div>
+                                <div class="form-group">
+                                    {{ form.confirm_password.label}}
+                                    {% if form.confirm_password.errors %}
+                                    {{ form.confirm_password(class="form-control is-invalid")}}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.confirm_password.errors %}
+                                        <span>{{ error }}</span>
+                                        {% endfor %}
+                                    </div>
+                                    {% else %}
+                                    {{ form.confirm_password(class="form-control")}}
+                                    {% endif %}
 
 
-                            </div>
-                            <div class="form-group">
-                                {{ form.confirm_password.label}}
-                                {{ form.confirm_password(class="form-control")}}
-
-
-                            </div>
+                                </div>
 
 
 
-                            <div class="form-group">
-                                {{ form.submit(class="mu-send-msg-btn")}}
-                            </div>
-                        </form>
+                                <div class="form-group">
+                                    {{ form.submit(class="mu-send-msg-btn")}}
+                                </div>
+                            </form>
+
+                        </div>
+                        <div class="border-top pt-3">
+                            <small class="text-muted">
+                                Already Have an account? <a class="ml-2" href="{{ url_for('login') }}">Login</a>
+                            </small>
+                        </div>
+                        <!-- End Sign up Content -->
 
                     </div>
-                    <div class="border-top pt-3">
-                        <small class="text-muted">
-                            Already Have an account? <a class="ml-2" href="{{ url_for('login') }}">Login</a>
-                        </small>
-                    </div>
-                    <!-- End Sign up Content -->
-
                 </div>
             </div>
         </div>
-    </div>
 </section>
 <!-- End Sign up -->
 
