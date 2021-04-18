@@ -18,3 +18,6 @@ class LoginForm(FlaskForm):
     
     remember = BooleanField('Remember Me')
     submit = SubmitField('Login')
+
+class SearchForm(FlaskForm):
+    isbn = StringField('ISBN', validators=[DataRequired()])
