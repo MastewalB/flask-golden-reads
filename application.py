@@ -1,10 +1,10 @@
 import os
 import requests
 import hashlib
-from flask import Flask, session, render_template, request, redirect, url_for, jsonify
+from flask import Flask, session, render_template, request, redirect, url_for, jsonify, flash
 from flask_session import Session
 from flask_login import current_user, login_user, login_required,logout_user
-from forms import RegistrationForm, LoginForm
+from forms import RegistrationForm, LoginForm, SearchForm
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
@@ -31,6 +31,12 @@ def index():
     return render_template('home.html')
 
 
+@app.route("/search", methods=['GET', 'POST'])
+def search():
+    form = SearchForm()
+    return render_template('search.html', title="Search", form=form)
+
+
 def password_hash(password):
     salt = "27a0091dee99016f8fb6599da096feff"
     salt_password = password + salt
@@ -49,6 +55,9 @@ def get_google_books_data(isbn):
 def signup():
     
     form = RegistrationForm()
+    if form.validate_on_submit():
+        flash(f'Account successfully created for {form.username.data}!!', 'success')
+        return redirect(url_for('search'))
     return render_template('signup.html', title='Sign Up', form=form)
 
 
@@ -56,7 +65,7 @@ def signup():
 @app.route("/login",methods=['GET','POST'])
 def login():
 
-    form = LoginForm()
+    form = LoginForm() 
     return render_template('login.html', title="Login", form=form)
 
 
