@@ -22,7 +22,7 @@
                         <div id="form-messages">
                             <form id="ajax-contact" method="POST" action="{{ url_for('signup', next=next) }}"
                                 class="sign-up-form">
-
+                                <!-- CSRF Protection -->
                                 {{ form.hidden_tag() }}
 
                                 <div class="form-group">
