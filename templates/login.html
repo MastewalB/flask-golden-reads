@@ -1,12 +1,13 @@
-{% extends 'base.html' %} {%block title%}Signup{%endblock%}
+{% extends 'base.html' %}
+{%block title%}{%endblock%}
 {% block template %}
 
 <!-- Start Sign up -->
-<section id="mu-contact" style="background-color: #ff871c;">
+<section id="sign-up">
     <div class="container">
         <div class="row">
             <div class="col-md-12">
-                <div class="mu-contact-area">
+                <div class="sign-up-area">
 
                     <div class="mu-heading-area">
                         <h2 class="mu-heading-title">Login</h2>
@@ -16,25 +17,65 @@
                     </div>
 
                     <!-- Start Sign up Content -->
-                    <div class="mu-contact-content">
+                    <div class="sign-up-content">
 
                         <div id="form-messages"></div>
                         <form id="ajax-contact" method="POST" action="{{ url_for('login', next=next) }}"
-                            class="mu-contact-form">
-                            <div class="form-group">
-                                <input type="text" class="form-control" placeholder="Username" id="username"
-                                    name="username" pattern="[a-zA-Z0-9]+" required style="background-color: #fff;" />
-                            </div>
-                            <div class="form-group">
-                                <input type="password" class="form-control" placeholder="Enter Password" id="password"
-                                    name="password" required style="background-color: #fff;" />
-                            </div>
+                            class="sign-up-form">
+
+                            {{ form.hidden_tag() }}
 
 
-                            <button type="submit" class="mu-send-msg-btn"
-                                style="background-color: #fff; "><span>Login</span></button>
+                            <div class="form-group">
+                                {{ form.email.label}}
+                                {% if form.email.errors %}
+                                {{ form.email(class="form-control is-invalid")}}
+                                <div class="invalid-feedback">
+                                    {% for error in form.email.errors %}
+                                    <span>{{ error }}</span>
+                                    {% endfor %}
+                                </div>
+                                {% else %}
+                                {{ form.email(class="form-control")}}
+                                {% endif %}
+
+
+                            </div>
+                            <div class="form-group">
+                                {{ form.password.label}}
+                                {% if form.password.errors %}
+                                {{ form.password(class="form-control is-invalid")}}
+                                <div class="invalid-feedback">
+                                    {% for error in form.password.errors %}
+                                    <span>{{ error }}</span>
+                                    {% endfor %}
+                                </div>
+                                {% else %}
+                                {{ form.password(class="form-control")}}
+                                {% endif %}
+
+
+                            </div>
+
+                            <div class="form-check">
+                                {{ form.remember(class="form-check-input") }}
+                                {{ form.remember.label(class="form-check-label") }}
+                            </div>
+
+                            <div class="form-group">
+                                {{ form.submit(class="btn btn-outline-info mu-send-msg-btn") }}
+
+                            </div>
+                            <small class="text-muted">
+                                <a href="#">Forgot Password??</a>
+                            </small>
                         </form>
 
+                    </div>
+                    <div class="border-top pt-3">
+                        <small class="text-muted">
+                            Create new account? <a class="ml-2" href="{{ url_for('signup') }}">Sign Up Now </a>
+                        </small>
                     </div>
                     <!-- End Sign up Content -->
 
@@ -45,4 +86,4 @@
 </section>
 <!-- End Sign up -->
 
-{%endblock%}
+{%endblock template%}
