@@ -30,13 +30,19 @@ def create_user_table():
     """Create User Table"""
     global db
     create_user_table = """
-    CREATE TABLE users (
+    CREATE TABLE IF NOT EXISTS Users (
           id SERIAL PRIMARY KEY,
-          username VARCHAR NOT NULL unique,
-          email VARCHAR NOT NULL,
-          password VARCHAR NOT NULL
+          username VARCHAR ( 20 ) UNIQUE NOT NULL,
+          email VARCHAR ( 255 ) NOT NULL,
+          password VARCHAR ( 50 ) NOT NULL,
+          last_login TIMESTAMP
       );
     """
+    try:
+        db.execute("DROP TABLE users")
+        print("Dropped users")
+    except:
+        print("No database users")
     db.execute(create_user_table)
     db.commit()
     print("User Table Created")
@@ -46,7 +52,7 @@ def create_book_table():
     """Create Book Table"""
     global db
     create_book_table = """
-    CREATE TABLE books (
+    CREATE TABLE IF NOT EXISTS books (
           id SERIAL PRIMARY KEY,
           isbn VARCHAR NOT NULL,
           title VARCHAR NOT NULL,
@@ -62,7 +68,7 @@ def create_review_table():
     """Create review Table"""
     global db
     create_book_table = """
-    CREATE TABLE review (
+    CREATE TABLE IF NOT EXISTS review (
           id SERIAL PRIMARY KEY,
           username VARCHAR NOT NULL,
           review VARCHAR NOT NULL,
@@ -76,7 +82,7 @@ def create_review_table():
 
 
 if __name__ == '__main__':
-"""     create_user_table()
+    create_user_table()
     create_book_table()
     create_review_table()
-    add_books()"""
+    #add_books()
