@@ -34,6 +34,9 @@ def index():
 @app.route("/search", methods=['GET', 'POST'])
 def search():
     form = SearchForm()
+    if form.validate_on_submit() and request.method == 'POST':
+        quest=form.search.data
+        return books(quest)
     return render_template('search.html', title="Search", form=form)
 
 
@@ -74,7 +77,7 @@ def signup():
         session['user_img'] = db.execute("SELECT image_file FROM Users WHERE username=:username", {'username':username})
         #print("Imageeeeeeee   ********* " + session['user_img'])
         if isbn:
-            return redirect(url_for('book'))
+            return redirect(url_for('books'))
         flash(f'Account successfully created for {form.username.data}!!', 'success')
         return redirect(url_for('search'))
         
@@ -91,20 +94,31 @@ def login():
         user = db.execute("SELECT * FROM Users WHERE email=:email;", {'email':email}).fetchone()
         if user and bcrypt.check_password_hash(user.password, form.password.data):
             session['logged_in'] = True
-            session['username'] = request.form.get('username')
-            if request.form.get('remember'):
-                make_session_permanent()
+            session['username'] = user.username
+           
             if isbn:
-                return redirect(url_for("book",isbn=isbn))
+                return redirect(url_for("books",isbn=isbn))
             return redirect(url_for("search"))            
         else:
             return render_template('login.html',message="Wrong Email Address.") 
     return render_template('login.html', title="Login", form=form, next=isbn)
 
 
-@app.route("/book", methods=['GET', 'POST'])
-def book():
-    return render_template('book.html')
+@app.route("/books", methods=['GET', 'POST'])
+def books():
+    form = SearchForm()
+    if form.validate_on_submit():
+        quest = form.search.data#request.args.get('search')
+        if quest != None:
+            quest = quest.strip().replace("'", "")
+            result_books = db.execute("SELECT * from books where isbn LIKE ('%"+quest+"%')  or lower(title) LIKE lower('%"+quest+"%') or  lower(author) LIKE lower('%"+quest+"%') order by year desc;").fetchall()
+            result_count = len(result_books)
+            print(result_count)
+            if result_count == 0:
+                return render_template('books.html', form=form, title='Search Results', quest=quest,result_count=result_count,message="404 Not Found")
+
+            return render_template('books.html', form=form , title='Search Results', quest=quest,result_count=result_count,result_books=result_books)
+    return render_template('books.html', form=form)
 
 
 @app.route("/logout")
