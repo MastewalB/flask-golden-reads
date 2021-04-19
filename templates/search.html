@@ -10,24 +10,28 @@
                 <div class="sign-up-area">
                     <div class="sign-up-content">
                         <div id="form-messages">
-                            <form id="ajax-contact" method="POST" action="{{ url_for('signup', next=next) }}"
+                            <form id="ajax-contact" method="POST" action="{{ url_for('books', next=next) }}"
                                 class="sign-up-form">
                                 <!-- CSRF Protection -->
                                 {{ form.hidden_tag() }}
 
                                 <div class="form-group">
-                                    {{ form.isbn.label}}
+                                    {{ form.search.label}}
 
-                                    {% if form.isbn.errors %}
-                                    {{ form.isbn(class="form-control is-invalid")}}
+                                    {% if form.search.errors %}
+                                    {{ form.search(class="form-control is-invalid")}}
                                     <div class="invalid-feedback">
-                                        {% for error in form.isbn.errors %}
+                                        {% for error in form.search.errors %}
                                         <span>{{ error }}</span>
                                         {% endfor %}
                                     </div>
                                     {% else %}
-                                    {{ form.isbn(class="form-control")}}
+                                    {{ form.search(class="form-control")}}
                                     {% endif %}
+                                </div>
+                                <div class="form-group">
+                                    {{ form.submit(class="btn btn-outline-info mu-send-msg-btn") }}
+
                                 </div>
                             </form>
                         </div>
