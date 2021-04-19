@@ -31,7 +31,7 @@ class LoginForm(FlaskForm):
     submit = SubmitField('Login')
 
 class SearchForm(FlaskForm):
-    isbn = StringField('Search and browse books', validators=[DataRequired()], render_kw={"placeholder": "Title / Author / ISBN"})
-
+    search = StringField('Search and browse books', validators=[DataRequired()], render_kw={"placeholder": "Title / Author / ISBN"})
+    submit = SubmitField('Search')
 
 from application import db
