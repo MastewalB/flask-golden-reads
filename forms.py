@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, BooleanField
+from wtforms import StringField, PasswordField, SubmitField, BooleanField, TextAreaField
 from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
 
 
@@ -33,5 +33,9 @@ class LoginForm(FlaskForm):
 class SearchForm(FlaskForm):
     search = StringField('Search and browse books', validators=[DataRequired()], render_kw={"placeholder": "Title / Author / ISBN"})
     submit = SubmitField('Search')
+
+class ReviewForm(FlaskForm):
+    review = TextAreaField('Review', validators=[DataRequired()], render_kw={"placeholder": "Write Your Review here"})
+    submit = SubmitField('Submit')
 
 from application import db
