@@ -3,7 +3,6 @@ import requests
 import hashlib
 from flask import Flask, session, render_template, request, redirect, url_for, jsonify, flash
 from flask_session import Session
-from flask_login import LoginManager, current_user, login_user, login_required,logout_user
 from forms import RegistrationForm, LoginForm, SearchForm
 from flask_bcrypt import Bcrypt 
 from sqlalchemy import create_engine
@@ -28,7 +27,7 @@ bcrypt = Bcrypt(app)
 @app.route("/")
 @app.route("/home")
 def index():
-    return render_template('home.html')
+    return render_template('home.html', title="Home")
 
 
 @app.route("/search", methods=['GET', 'POST'])
@@ -45,18 +44,24 @@ def make_session_permanent():
     session.permanent = True 
 
 
-def password_hash(password):
-    salt = "27a0091dee99016f8fb6599da096feff"
-    salt_password = password + salt
-    hashed_password = hashlib.md5(salt_password.encode())
-    return hashed_password.hexdigest()
-
-
 def get_google_books_data(isbn):
-    response = requests.get(f"https://www.googleapis.com/books/v1/volumes?q={isbn}&key=AIzaSyDTPZR0X5RS-Vb7k00pG9QfmykL-yTE514")
-    value = response.json()
-    #print(value)
+    response = requests.get(f"https://www.googleapis.com/books/v1/volumes?q={int(isbn)}&key=AIzaSyDTPZR0X5RS-Vb7k00pG9QfmykL-yTE514").json()
+    items = response.get("items")
+    rating = 0
+    pageNum = 0
+    description = ""
 
+    if items:
+        try:
+            rating = items[0].get("volumeInfo").get("averageRating")
+            description = items[0].get("volumeInfo").get("description")
+            pageNum = items[0].get("volumeInfo").get("pageCount")
+        except:
+            rating = 0
+            pageNum = 0
+            description = ""
+    
+    return [pageNum, rating, description]
 
 
 @app.route("/signup", methods=['GET', 'POST'])
@@ -74,8 +79,8 @@ def signup():
         db.commit()
         session['logged_in'] = True
         session['username'] = username
-        session['user_img'] = db.execute("SELECT image_file FROM Users WHERE username=:username", {'username':username})
-        #print("Imageeeeeeee   ********* " + session['user_img'])
+        #session['user_img'] = db.execute("SELECT image_file FROM Users WHERE username=:username", {'username':username})
+        #print(session['user_img'])
         if isbn:
             return redirect(url_for('books'))
         flash(f'Account successfully created for {form.username.data}!!', 'success')
@@ -95,7 +100,7 @@ def login():
         if user and bcrypt.check_password_hash(user.password, form.password.data):
             session['logged_in'] = True
             session['username'] = user.username
-           
+            session['user_img'] = user.image_file
             if isbn:
                 return redirect(url_for("books",isbn=isbn))
             return redirect(url_for("search"))            
@@ -108,17 +113,66 @@ def login():
 def books():
     form = SearchForm()
     if form.validate_on_submit():
-        quest = form.search.data#request.args.get('search')
+        quest = form.search.data
         if quest != None:
             quest = quest.strip().replace("'", "")
             result_books = db.execute("SELECT * from books where isbn LIKE ('%"+quest+"%')  or lower(title) LIKE lower('%"+quest+"%') or  lower(author) LIKE lower('%"+quest+"%') order by year desc;").fetchall()
             result_count = len(result_books)
-            print(result_count)
+            
             if result_count == 0:
                 return render_template('books.html', form=form, title='Search Results', quest=quest,result_count=result_count,message="404 Not Found")
 
             return render_template('books.html', form=form , title='Search Results', quest=quest,result_count=result_count,result_books=result_books)
     return render_template('books.html', form=form)
+
+
+@app.route("/book/<isbn>", methods=['GET', 'POST'])
+def book(isbn):
+    message = None
+    error = False
+    is_reviewed = False
+    if request.method == 'POST' and session['logged_in']:
+        my_rating = int(request.form.get('rating'))
+        my_review = request.form.get('review')
+        book_id = request.form.get('book_id')
+        
+        if my_review.strip() == "" or my_rating == "":
+            message = "Invalid Review"
+        else:
+            db.execute("INSERT INTO review (username, review, rating, book_id) select :username,:review,:rating,:book_id where not exists (select * from review where username = :username and book_id = :book_id);",
+            {
+            'username': session['username'],
+            'review': my_review,
+            'rating': my_rating,
+            'book_id':book_id
+            })
+            db.commit()
+            is_reviewed = True
+    res = db.execute("select * from books where isbn=:isbn;",{'isbn':isbn}).fetchone() 
+    if res==None:
+        return render_template('book.html')
+    
+
+
+    reviews = db.execute("select * from review where book_id=:id;",{'id':res.id}).fetchall()
+    if request.method == "GET":
+        try:
+            if session['logged_in']:
+                check_review = db.execute("select username from review where book_id=:id and username=:username;",
+            {
+                'id':res.id,
+                'username': session['username']  
+            }).fetchone()
+                if check_review != None:
+                    is_reviewed = True
+        except:
+            pass
+    try:
+        pageNum, rating, description = get_google_books_data(isbn)
+    except:
+        error = True
+        pageNum, rating, description = 0, 0, 0    
+
 
 
 @app.route("/logout")
@@ -129,7 +183,7 @@ def logout():
 
 
 
-get_google_books_data(9781632168146)
+get_google_books_data('1451648537')
 if __name__ == '__main__':
     app.debug = True
     app.run()
