@@ -72,6 +72,8 @@
                             <li>
                                 <a href="#">{{session['username']}}</a>
                             </li>
+                            <img class="img rounded-circle article-img"
+                                src="{{url_for('static',filename='images/profile_pics/' + session['user_img']) }}" />
                             {% endif %}
                             {% if not session['logged_in']%}
                             <li><a href="{{url_for('login')}}">Login</a></li>
