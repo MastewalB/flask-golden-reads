@@ -194,6 +194,32 @@ def book(isbn):
     return render_template('book.html',obj_book=res, form=form, pageNum=pageNum, description=description, image_link=image_link, rating=rating,ratingsCount=ratingsCount, reviews=reviews,message=message,is_reviewed=is_reviewed,error=error)
    
 
+@app.route("/api/<isbn>")
+def api_url(isbn):
+    fallback = "https://images.unsplash.com/photo-1499482125586-91609c0b5fd4?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=634&q=80"
+    res = db.execute("select * from books where isbn=:isbn;",{'isbn':isbn}).fetchone()
+    if res == None:
+        return jsonify({
+            "error": "Invalid isbn.",
+            "Message": "See documentation at '/api'"
+            }),404
+    try:
+        pageNum, rating, description, image_link, ratingsCount = get_google_books_data(isbn)
+    except:
+        pageNum, rating, description, image_link, ratingsCount = 0, 0, "", fallback, 0
+    
+    return jsonify({
+        "title": res.title,
+        "author": res.author,
+        "year": res.year,
+        "isbn": res.isbn,
+        "pageCount":pageNum,
+        "ratings_count": ratingsCount,
+        "average_rating": rating,
+        "description": description,
+        "image_link": image_link
+    }),200
+
 
 
 @app.route("/logout")
