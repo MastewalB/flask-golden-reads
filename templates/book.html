@@ -1,0 +1,130 @@
+{% extends 'base.html' %}
+{% block title %}
+{% if obj_books %}
+{{ obj_books.title }}
+{% endif %}
+{% endblock title %}
+
+{% block template %}
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+
+            {% if obj_book %}
+            <div class="ui divided items">
+                <div class="item">
+                    <div class="image">
+                        <img src="{{ image_link }}">
+                    </div>
+                    <div class="content">
+                        <h2 class="header" id="book_title">{{obj_book.title}}</h2>
+                        <div class="book-author">
+                            by {{obj_book.author}}
+                        </div>
+                        <div class="book-rating">
+                            Average Rating - {{rating}}
+                            Rating Details
+                            <svg width="16" height="15">
+                                <g transform="translate(0,0)">
+                                    <rect cursor="" x="0" y="0" width="16" height="2" fill="rgb(33,86,37)"
+                                        fill-opacity="1" stroke="none" stroke-opacity="0" stroke-width="1.5"></rect>
+                                    <rect cursor="" x="0" y="3" width="7.775480059084195" height="2"
+                                        fill="rgb(33,86,37)" fill-opacity="1" stroke="none" stroke-opacity="0"
+                                        stroke-width="1.5"></rect>
+                                    <rect cursor="" x="0" y="6" width="3.072378138847858" height="2"
+                                        fill="rgb(33,86,37)" fill-opacity="1" stroke="none" stroke-opacity="0"
+                                        stroke-width="1.5"></rect>
+                                    <rect cursor="" x="0" y="9" width="1.1580502215657311" height="2"
+                                        fill="rgb(33,86,37)" fill-opacity="1" stroke="none" stroke-opacity="0"
+                                        stroke-width="1.5"></rect>
+                                    <rect cursor="" x="0" y="12" width="0.6144756277695717" height="2"
+                                        fill="rgb(33,86,37)" fill-opacity="1" stroke="none" stroke-opacity="0"
+                                        stroke-width="1.5"></rect>
+                                </g>
+                            </svg> {{ ratingsCount }} ratings
+                        </div>
+                        <div class="book-description">
+
+                            <footer class="blockquote-footer">
+                                Published {{obj_book.year}} - ISBN {{obj_book.isbn}}
+                            </footer>
+
+                        </div>
+                    </div>
+                </div>
+
+
+                {% if session['logged_in'] and not(is_reviewed) %}
+                <div class="review_form">
+                    <form id="ajax-contact" method="POST" action="{{ url_for('book', isbn=obj_book.isbn) }}"
+                        class="sign-up-form">
+
+                        {{ form.hidden_tag() }}
+                        <input type="hidden" name="book_id" value="{{obj_book.id}}" />
+                        <ul class="rate-area">
+                            <input type="radio" id="5-star" name="rating" value="5" /><label for="5-star"
+                                title="Amazing">5
+                                stars</label>
+                            <input type="radio" id="4-star" name="rating" value="4" /><label for="4-star" title="Good">4
+                                stars</label>
+                            <input type="radio" id="3-star" name="rating" value="3" /><label for="3-star"
+                                title="Average">3
+                                stars</label>
+                            <input type="radio" id="2-star" name="rating" value="2" /><label for="2-star"
+                                title="Not Good">2
+                                stars</label>
+                            <input type="radio" id="1-star" name="rating" value="1" /><label for="1-star" title="Bad">1
+                                star</label>
+                        </ul>
+
+                        <div class="form-group">
+                            {{ form.review.label}}
+
+                            {% if form.review.errors %}
+                            {{ form.review(class="form-control is-invalid")}}
+                            <div class="invalid-feedback">
+                                {% for error in form.review.errors %}
+                                <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                            {% else %}
+                            {{ form.review(class="form-control")}}
+                            {% endif %}
+                        </div>
+                        <div class="form-group">
+                            {{ form.submit(class="btn btn-outline-info mu-send-msg-btn") }}
+
+                        </div>
+                    </form>
+                    {%elif not( session['logged_in'])%}
+                    <hr />
+                    <div class="login-msg">
+                        <a href="{{url_for('login', next=obj_book.isbn)}}">Login</a> or
+                        <a href="{{url_for('signup',next=obj_book.isbn)}}">Sign up</a> To give
+                        your review
+                    </div>
+                    <hr />
+                    {% endif%}
+                </div>
+
+            </div>
+
+            {% if not(error) %}
+            {%endif%}
+            <div class="reviews mb-5">
+                {% if reviews %} {%for review in reviews%}
+                <!-- start review -->
+                <div class="review">
+                    <h5>{{review.username}} | {{review.rating}}</h5>
+                    <h6>{{review.review}}</h6>
+                </div>
+                <!-- end review -->
+                {%endfor%} {%endif%}
+            </div>
+        </div>
+        {%endif%}
+    </div>
+</div>
+</div>
+{% endblock template %}
