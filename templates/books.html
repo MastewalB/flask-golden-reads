@@ -53,18 +53,16 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="ui container" id="container">
-                    <!-- Timer API -->
-                    {%if result_books %}
-                    <div class="ui message">
-                        <div class="head">
-                            {{result_count}} Results Found For "{{quest}}"
-                        </div>
-                        <p>{%if message %}
-                        <div class="error">
-                            {{message}}
-                        </div>
-                        {%endif%}</p>
+
+                    {%if not result_counts %}
+
+
+                    <p>{%if message %}
+                    <div class="error">
+                        {{message}}
                     </div>
+                    {%endif%}</p>
+
                     {%endif%}
 
                     <!-- All Books  -->
@@ -72,7 +70,8 @@
                     <div class="ui top attached segment">
 
                         <div class="ui green message">
-                            <i class="star icon"></i> All Books From JSON placeholder API
+                            <i class="star icon"></i> {{result_count}} Result{%if result_count > 1 %}s{%endif%} Found
+                            For "{{quest}}"
                         </div>
                         <div class="ui divided items" id="theBooks">
 
@@ -81,11 +80,10 @@
 
                             <div class="item">
                                 <div class="image">
-                                    <img
-                                        src=" https://images.unsplash.com/photo-1499482125586-91609c0b5fd4?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=634&q=80">
+                                    <img src="{{ result_images[loop.index-1] }}">
                                 </div>
                                 <div class="content">
-                                    <a class="header" href="#" id="book-title">
+                                    <a class="header" href="{{url_for('book',isbn=book.isbn)}}" id="book-title">
                                         {{book.title}}
                                     </a>
                                     <div class="book-author">
