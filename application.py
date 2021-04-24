@@ -201,7 +201,7 @@ def api_url(isbn):
     if res == None:
         return jsonify({
             "error": "Invalid isbn.",
-            "Message": "See documentation at '/api'"
+            "Message": "Error"
             }),404
     try:
         pageNum, rating, description, image_link, ratingsCount = get_google_books_data(isbn)
