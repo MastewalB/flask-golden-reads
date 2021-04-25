@@ -5,6 +5,7 @@ from flask import Flask, session, render_template, request, redirect, url_for, j
 from flask_session import Session
 from forms import RegistrationForm, LoginForm, SearchForm, ReviewForm
 from flask_bcrypt import Bcrypt 
+from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 
@@ -14,6 +15,8 @@ app.config['SECRET_KEY'] = '387b28b25302f3d780ed53706cdeed2e'
 if not os.getenv("DATABASE_URL"):
     raise RuntimeError("DATABASE_URL is not set")
 
+app.config['FLASK_GOLDEN_READS_DB'] = os.getenv('DATABASE_URL')
+db = SQLAlchemy(app)
 # Configure session to use filesystem
 app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
@@ -21,8 +24,18 @@ Session(app)
 
 # Set up database
 engine = create_engine(os.getenv("DATABASE_URL"))
-db = scoped_session(sessionmaker(bind=engine))
+#db = scoped_session(sessionmaker(bind=engine))
 bcrypt = Bcrypt(app)
+
+
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(20), unique=True, nullable=False)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+    image_file = db.Column(db.String(20), nullable=False, default='default.jpg')
+    password = db.Column(db.String(60), nullable=False)
+
+
 
 @app.route("/")
 @app.route("/home")
