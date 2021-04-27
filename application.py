@@ -47,6 +47,9 @@ class Book(db.Model):
     author = db.Column(db.String(120), nullable=False)
     year = db.Column(db.Date, nullable=False)
 
+    def __repr__(self):
+        return f"Book('{self.title}', '{self.author}', '{self.year}', '{self.isbn}')"
+
 
 
 class Review(db.Model):
@@ -56,6 +59,9 @@ class Review(db.Model):
     rating = db.Column(db.Integer)
     date_reviewed = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     book_id = db.Column(db.Integer, db.ForeignKey('book.id'), nullable=False)
+
+    def __repr__(self):
+        return f"Review('{self.username}','{self.id}','{self.rating}')"
 
 
 
