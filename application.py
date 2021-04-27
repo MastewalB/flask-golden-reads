@@ -1,6 +1,7 @@
 import os
 import requests
 import hashlib
+from datetime import datetime
 from flask import Flask, session, render_template, request, redirect, url_for, jsonify, flash
 from flask_session import Session
 from forms import RegistrationForm, LoginForm, SearchForm, ReviewForm
@@ -44,9 +45,17 @@ class Book(db.Model):
     isbn = db.Column(db.String(20), nullable=False)
     title = db.Column(db.String(120), unique=True, nullable=False)
     author = db.Column(db.String(120), nullable=False)
-    year = db.Column(db.Date(), nullable=False)
+    year = db.Column(db.Date, nullable=False)
 
 
+
+class Review(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(20), db.ForeignKey('user.username'), nullable=False)
+    review = db.Column(db.Text)
+    rating = db.Column(db.Integer)
+    date_reviewed = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    book_id = db.Column(db.Integer, db.ForeignKey('book.id'), nullable=False)
 
 
 
