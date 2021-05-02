@@ -20,6 +20,9 @@ def search():
 
 @app.route("/signup", methods=['GET', 'POST'])
 def signup():
+
+    if current_user.is_authenticated:
+        return redirect(url_for('home'))
     
     isbn = request.args.get('next')
     form = RegistrationForm()
@@ -29,8 +32,12 @@ def signup():
         username = form.username.data
         email = form.email.data
         hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
-        user = db.execute("INSERT INTO Users (username, email, password) VALUES (:username, :email, :password);", {'username':username, 'email': email, 'password' :hashed_password})
-        db.commit()
+        #user = db.execute("INSERT INTO Users (username, email, password) VALUES (:username, :email, :password);", {'username':username, 'email': email, 'password' :hashed_password})
+        user = User(username=form.username.data,email = form.email.data, password=hashed_password)
+        db.session.add(user)
+        db.session.commit()
+        #---Needs Check
+        login_user(user, remember=form.remember.data)
         session['logged_in'] = True
         session['username'] = username
         #session['user_img'] = db.execute("SELECT image_file FROM Users WHERE username=:username", {'username':username})
@@ -46,12 +53,18 @@ def signup():
 
 @app.route("/login",methods=['GET','POST'])
 def login():
+    if current_user.is_authenticated:
+        return redirect(url_for('home'))
+
     isbn = request.args.get('next')
     form = LoginForm()
     if form.validate_on_submit():
+
         email = request.form.get('email')
-        user = db.execute("SELECT * FROM Users WHERE email=:email;", {'email':email}).fetchone()
+        #user = db.execute("SELECT * FROM Users WHERE email=:email;", {'email':email}).fetchone()
+        user = User.query.filter_by(email=form.email.data).first()
         if user and bcrypt.check_password_hash(user.password, form.password.data):
+            login_user(user, remember=form.remember.data)
             session['logged_in'] = True
             session['username'] = user.username
             session['user_img'] = user.image_file
@@ -172,5 +185,6 @@ def api_url(isbn):
 @app.route("/logout")
 def logout():
     
-    session.clear()
+    logout_user()
+    #session.clear()
     return redirect(url_for("login"))
