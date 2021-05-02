@@ -12,13 +12,13 @@ class RegistrationForm(FlaskForm):
     submit = SubmitField('Sign Up')
 
     def validate_username(self, username):
-        #user = db.execute("SELECT * FROM Users WHERE username=:username;", {'username':username.data}).fetchone()
+        user = db.execute("SELECT * FROM Users WHERE username=:username;", {'username':username.data}).fetchone()
         if user:
             raise ValidationError('Username Already Taken. Please Choose a different one.')
     
 
     def validate_email(self, email):
-        #email = db.execute("SELECT * FROM Users WHERE email=:email;", {'email':email.data}).fetchone()
+        email = db.execute("SELECT * FROM Users WHERE email=:email;", {'email':email.data}).fetchone()
         if email:
             raise ValidationError('Email Already Taken. Please enter a different one.')
 
@@ -38,4 +38,4 @@ class ReviewForm(FlaskForm):
     review = TextAreaField('Review', validators=[DataRequired()], render_kw={"placeholder": "Write Your Review here"})
     submit = SubmitField('Submit')
 
-#from application import db
+from application import db
