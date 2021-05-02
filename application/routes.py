@@ -1,5 +1,7 @@
+from application import app
 from flask import render_template, request, redirect, url_for, jsonify, flash
-from models import User, Book, Review
+from application.models import User, Book, Review
+from application.forms import RegistrationForm, LoginForm, SearchForm, ReviewForm
 
 @app.route("/")
 @app.route("/home")
